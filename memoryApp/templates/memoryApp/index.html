@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Memory Game</title>
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'mainFDM/images/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" href="{% static 'mainFDM/images/favicon.ico' %}">
+
+</head>
+<body id="home">
+
+<header>
+
+</header>
+
+<div class="main-container">
+    <div id="child-class-id" class="child-container hide">
+        <p id="status" align="center" class="status-bar">Find all the matching icons to win</p>
+    <div id="grid-id" class="grid hide"></div>
+    <div class="container-2">
+        <div id="timer" align="center" class="timer hide" >02:00</div>
+
+        <div align="center">
+            <form method="post" class="timer">
+            {% csrf_token %}
+
+                    <button id="sub-btn" type="submit" align="center" class="hide btn_end">Results Page</button>
+
+                    <button type="button" id="mybutton-1" onclick="location.href = '/';" title="link to homepage" class="hide btn_end">Back to Homepage</button>
+                    <button type="button" id="mybutton-2" onclick="location.href = '/memory';" title="link to homepage" class="hide btn_end">Play Again</button>
+
+                    <input type="hidden" name="score-holder" id="score-holder" value="blank">
+                    <input type="hidden" name="stream-holder" id="stream-holder" value={{ steam_type }}>
+
+{#                <input type="hidden" name="score-holder" id="stream-holder" value='BI'>#}
+        </form>
+
+        </div>
+    </div>
+    </div>
+</div>
+
+    <script src="../../static/js/app.js" charset="UTF-8"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+
+
+
+</body>
+</html>

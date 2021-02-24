@@ -1,0 +1,20 @@
+{
+  "name": "fdm2",
+  "version": "1.0.0",
+  "description": "---\r This document contains a description of the project and credentials to the admin and helper pages along with \r instructions for developers on how to run the system locally.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://nucode.ncl.ac.uk/scomp/stage-2/csc2033-software-engineering-team-project/teams/Team-4/fdm-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jasmine": "^3.6.4",
+    "jest": "^26.6.3"
+  }
+}

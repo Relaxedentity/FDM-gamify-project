@@ -1,0 +1,155 @@
+{% extends 'mainFDM/base.html' %}
+
+{%block title%}Helper Home{%endblock%}
+
+{%block header%}Helper Page{%endblock%}
+
+{% block navtext %}
+    <!-- if the user is logged in, show a welcoming message and a log out button on the navbar
+    and collapse it under the toggle button on smaller screens -->
+    {% if request.user.is_authenticated %}
+        <span class="navbar-text text-info mx-2">Hello, {{ request.user }} </span>
+        <a class="nav-link link-light mx-2" href="/helper/logout/">Log out <span class="sr-only"></span></a>
+    {% endif %}
+{% endblock %}
+
+<!-- container for the main row of columns -->
+{% block forcolumns %}
+                  <!-- row of 2 columns with helper question form and check scores form -->
+                  <div class="row justify-content-center justify-content-md-around justify-content-lg-between pb-3">
+
+                    <!-- helper question adding form column -->
+                    <div class="col-auto col-md-5 form-col p-3 p-sm-3 pb-4 pb-sm-3 justify-content-center">
+
+                                <form method="post" action=""> {% csrf_token %}
+
+                                    <div class="form-title-div">
+                                      <h3 class="form-title">Add a question</h3>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        {{ q_form.stream_type }}
+                                    </div>
+                                    <div>
+                                        {{ q_form.question }}
+                                    </div>
+                                    <p class="mb-3" style="color: #912f2f">Maximum 200 characters</p>
+                                    <div>
+                                        {{ q_form.answer }}
+                                    </div>
+                                    <p class="mb-3" style="color: #912f2f">Maximum 400 characters</p>
+
+                                    <!-- button to submit question -->
+                                    <div class="d-flex pt-1 justify-content-center">
+                                        <button type="submit" class="btn btn-grad btn-lg" id="form-btn" >Submit</button>
+                                    </div>
+                                </form>
+
+                    </div> <!-- end of helper question adding form column -->
+
+                      <!-- column with the retrieving score form -->
+                      <div class="col-sm-auto col-md-5" >
+                          <div class="form-col p-4">
+
+                              <h3 class="form-title">Retrieve Scores</h3>
+
+                              <!-- table with current best scoring players and their scores -->
+                              <table class="table table-bordered d-none" id="best-scores-table">
+                                  <thead class="table-head">
+                                    <tr class="table-row">
+                                      <th scope="col">Game Type</th>
+                                      <th scope="col">Player Username</th>
+                                      <th scope="col">Best Score</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr class="table-row" id="cable-tr">
+                                      <td>Cable Game</td>
+                                      <td>{{ best_cable.player_username }}</td>
+                                      <td>{{ best_cable.score }}</td>
+                                    </tr>
+                                    <tr class="table-row" id="memo-tr">
+                                      <td>Memory Game</td>
+                                      <td>{{ best_memo.player_username }}</td>
+                                      <td>{{ best_memo.score }}</td>
+                                    </tr>
+                                    <tr class="table-row" id="pipe-tr">
+                                        <td>Pipe Game</td>
+                                        <td>{{ best_pipes.player_username }}</td>
+                                        <td>{{ best_pipes.score }}</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+
+                              <!-- retrieve scores button -->
+                              <div class="d-flex pt-1 justify-content-center">
+                               <button type="submit" class="btn btn-grad btn-lg" id="get-b-score" >Get Best Scores</button>
+                              </div>
+                          </div>
+                      </div> <!-- end of column with the retrieving score form -->
+                  </div> <!-- end of the row of 2 columns with 2 forms -->
+
+    <!-- container with the question table, size is landscape to prevent the page from shrinking before the table appears -->
+    <div class="container justify-content-center" style="size: landscape">
+
+        <div class="container text-center form-title-div">
+          <h3 class="subheader">Saved Questions</h3>
+        </div>
+
+        <!-- table with current questions from the database -->
+              <table class="table table-bordered">
+                  <thead class="table-head">
+                    <tr class="table-row">
+                        <th scope="col">#</th>
+                        <th scope="col">Stream Type</th>
+                        <th scope="col">Question</th>
+                        <th scope="col">Answer</th>
+                    </tr>
+                  </thead>
+                  <tbody id="questions-table">
+                  </tbody>
+                </table>
+    </div>
+{% endblock %} <!-- block forcolumns -->
+
+<!-- footer  -->
+{% block helper-button %}
+<a href="/helper/logout/" type="button" class="btn btn-grad btn-lg mt-2 mx-auto text-nowrap" id="helper-login-btn">
+    HELPER LOGOUT
+</a>
+{% endblock %}
+
+<!-- JavaScript -->
+{% block scripts %}
+    <script>
+        // Using IIFE - Immediately Invoked Function Expression to speed up the table rendering
+        (function(mycode) {
+
+            // The global jQuery object is passed as a parameter
+            mycode(window.jQuery, window, document);
+
+        }(function($, window, document) {
+
+            // the usual jquery stuff that would normally end up in $(document).read():
+
+            // get the json data with the questions from the views
+            let qs_json = JSON.parse('{{ qsjson | escapejs }}');
+
+            // iterate over a range equal to the number of questions
+            for (let i = 0; i < qs_json.length; i++){
+                // add indexing to the rows with questions and answers that are being added
+                $('#questions-table').append('<tr class="table-row"> ' +
+                    '<th class="row-index">' + (i+1) + '</th>' +
+                            '<td>' + qs_json[i].stream_type +  '</td> <td>' + qs_json[i].question + '</td> <td>' + qs_json[i].answer + '</td></tr>')
+            }
+
+            // retrieve the best scores
+             $("#get-b-score").click(function(){
+                $("#best-scores-table").removeClass("d-none");
+                });
+
+        }
+        ));
+    </script>
+
+{% endblock %}

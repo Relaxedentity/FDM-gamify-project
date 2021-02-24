@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+{% load static %}
+<html style="background-color: black">
+    <head>
+        <meta charset="utf-8">
+        <title>Cable Game</title>
+        <script type="text/javascript" src="../../static/js/phaser.min.js"></script>
+
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static 'mainFDM/images/favicon-32x32.png' %}">
+        <link rel="icon" type="image/png" href="{% static 'mainFDM/images/favicon.ico' %}">
+
+    </head>
+    <body>
+
+    <div>
+
+        {# using hidden inputs to get and store questions and answers from views.py #}
+        <input  value="{{ question_1 }}" name="value" id='q1' type="hidden"/>
+        <input  value="{{ question_2 }}" name="value" id='q2' type="hidden"/>
+        <input  value="{{ question_3 }}" name="value" id='q3' type="hidden"/>
+        <input  value="{{ question_4 }}" name="value" id='q4' type="hidden"/>
+        <input  value="{{ answer_1 }}" name="value" id='a1' type="hidden"/>
+        <input  value="{{ answer_2 }}" name="value" id='a2' type="hidden"/>
+        <input  value="{{ answer_3 }}" name="value" id='a3' type="hidden"/>
+        <input  value="{{ answer_4 }}" name="value" id='a4' type="hidden"/>
+
+    </div>
+
+    {# used to post results on the results page#}
+     <form name="cablegame" method="post" id="cable_game">
+         {% csrf_token %}
+
+         {#phaser game#}
+         <script type="text/javascript">
+
+
+             // create game scene
+             var config = {
+                 type: Phaser.AUTO,
+                 width: 1200,
+                 height: 741,
+
+                 physics: {
+                     default: 'arcade',
+                     arcade: {
+                         gravity: { y: 0 }
+                     }
+                 },
+                 scale: {
+                    // Fit to window
+                    mode: Phaser.Scale.FIT,
+                    // Center vertically and horizontally
+                    autoCenter: Phaser.Scale.CENTER_BOTH
+                    },
+                scene: {
+                    preload: preload,
+                    create: create,
+                    update: update
+                }
+            };
+
+            var game = new Phaser.Game(config);
+
+            //variables to use in the game
+            var imagesCon=[];
+            var line;
+            var lineActive = false;
+            var lines = [];
+            var firstSelected = null;
+            var completedNodes = [];
+            var reset = false;
+            var images=[];
+            var deduct = false;
+            var qnaCount = 0;
+            var i;
+            var answsr1 =0;
+            var answsr2=0;
+            var answsr3=0;
+            var answsr4=0;
+
+
+
+            //set all questions and answers from html input
+            var qst1 = document.getElementById('q1').value;
+            var qst2 = document.getElementById('q2').value;
+            var qst3 = document.getElementById('q3').value;
+            var qst4 = document.getElementById('q4').value;
+
+            var answ1 = document.getElementById('a1').value;
+            var answ2 = document.getElementById('a2').value;
+            var answ3 = document.getElementById('a3').value;
+            var answ4 = document.getElementById('a4').value;
+
+            // use lineBreak() function to change line to question and answer strings if their length is big
+            var finalQ1 = lineBreak(qst1);
+            var finalQ2 = lineBreak(qst2);
+            var finalQ3 = lineBreak(qst3);
+            var finalQ4 = lineBreak(qst4);
+
+            var finalA1 = lineBreak(answ1);
+            var finalA2 = lineBreak(answ2);
+            var finalA3 = lineBreak(answ3);
+            var finalA4 = lineBreak(answ4);
+
+
+
+            // load images from static to use in create() function
+            function preload ()
+            {
+                this.load.image('background',"{% static "images/background.jpg" %}")
+
+                this.load.image('questioncable','{% static "images/QuestionCable.png" %}')
+                this.load.image('answercable','{% static "images/AnswerCable.png" %}')
+
+                this.load.image('questionConcable','{% static "images/QuestionCable2.png" %}')
+                this.load.image('answerConcable','{% static "images/AnswerCable2.png" %}')
+
+                this.load.image('q1a1', '{% static "images/q1a1r.png" %}')
+                this.load.image('q1a2', '{% static "images/q1a2r.png" %}')
+                this.load.image('q1a3', '{% static "images/q1a3r.png" %}')
+                this.load.image('q1a4', '{% static "images/q1a4r.png" %}')
+                this.load.image('q2a1', '{% static "images/q2a1r.png" %}')
+                this.load.image('q3a1', '{% static "images/q3a1r.png" %}')
+                this.load.image('q4a1', '{% static "images/q4a1r.png" %}')
+
+                this.load.image('q1a1f', '{% static "images/q1a1f.png" %}')
+                this.load.image('q1a2f', '{% static "images/q1a2f.png" %}')
+                this.load.image('q1a3f', '{% static "images/q1a3f.png" %}')
+                this.load.image('q1a4f', '{% static "images/q1a4f.png" %}')
+                this.load.image('q2a1f', '{% static "images/q2a1f.png" %}')
+                this.load.image('q3a1f', '{% static "images/q3a1f.png" %}')
+                this.load.image('q4a1f', '{% static "images/q4a1f.png" %}')
+
+                this.load.image('timer','{% static "images/timer.png" %}')
+
+                this.load.image('play','{% static "images/play-button.png" %}')
+
+                this.load.image('textBorder','{% static "images/text-border.png" %}')
+
+                this.load.image('fullscreen','{% static "images/fullscreen.png" %}')
+
+                this.load.image('replay','{% static "images/Replay.png" %}')
+                this.load.image('home','{% static "images/Home.png" %}')
+            }
+
+            //create main game
+            function create ()
+            {
+                var main = this;
+
+                //create background image
+                var bg = this.add.image(400, 300, 'background').setInteractive();
+                bg.setScale(2);
+
+                // uncomment question number indicators only for testing purposes
+                    // set all questions and answers
+                    var question1 = finalQ1 //+ "A1"
+                    var answer1 = finalA1
+
+                    var question2 = finalQ2 //+"A2"
+                    var answer2 = finalA2
+
+                    var question3 = finalQ3 //+"A3"
+                    var answer3 = finalA3
+
+                    var question4 = finalQ4 //+"A4"
+                    var answer4 = finalA4
+
+                    // array with coordinates for randomizing question cables
+                    var array = [93, 278, 463, 648]
+
+                    // function to shuffle array with coordinates
+                    var shuffle = function (array) {
+                        for (var i = array.length - 1; i > 0; i--) {
+                            var j = Math.floor(Math.random() * (i + 1));
+                            var temp = array[i];
+                            array[i] = array[j];
+                            array[j] = temp;
+                        }
+                        return array;
+                    };
+                    // new shuffled array with coordinates
+                    var newArray = shuffle(array)
+
+
+                    // create borders for text
+                    this.add.image(151, 93, 'textBorder')
+                    this.add.image(151, 278, 'textBorder')
+                    this.add.image(151, 463, 'textBorder')
+                    this.add.image(151, 648, 'textBorder')
+
+
+                    this.add.image(1049, 93, 'textBorder')
+                    this.add.image(1049, 278, 'textBorder')
+                    this.add.image(1049, 463, 'textBorder')
+                    this.add.image(1049, 648, 'textBorder')
+
+                    // set random positions for question texts
+                    this.add.text(70, newArray[0]-40, question1,{align: 'center' , font: "13px Sans-Serif"})
+                    this.add.text(70, newArray[1]-40, question2,{align: 'center' , font: "13px Sans-Serif"})
+                    this.add.text(70, newArray[2]-40, question3,{align: 'center' , font: "13px Sans-Serif"})
+                    this.add.text(70, newArray[3]-40, question4,{align: 'center' , font: "13px Sans-Serif"})
+
+
+
+                    // set positions for answer texts depending on the length of each one
+                    if(answer1.length<31){
+                         this.add.text(1010, 85, answer1, {align: 'center' , font: "13px -Serif"})
+                     }else{
+                         this.add.text(975, 15, answer1, {align: 'center' , font: "13px Sans-Serif"})
+                     }
+
+                     if(answer2.length<21){
+                         this.add.text(1010, 270, answer2, {align: 'center' , font: "13px Sans-Serif"})
+                     }else{
+                         this.add.text(975, 200, answer2, {align: 'center' , font: "13px Sans-Serif"})
+                     }
+
+                     if(answer3.length<21){
+                         this.add.text(1010, 455, answer3, {align: 'center' , font: "13px Sans-Serif"})
+                     }else{
+                         this.add.text(975, 385, answer3, {align: 'center' , font: "13px Sans-Serif"})
+                     }
+
+                     if(answer4.length<21){
+                         this.add.text(1010, 640, answer4, {align: 'center' , font: "13px Sans-Serif"})
+                     }else{
+                         this.add.text(975, 570, answer4, {align: 'center' , font: "13px Sans-Serif"})
+                     }
+
+                    //array of connected cable images
+                    imagesCon = [
+                        this.add.image(397, newArray[0], 'questionConcable'),
+                        this.add.image(397, newArray[1], 'questionConcable'),
+                        this.add.image(397, newArray[2], 'questionConcable'),
+                        this.add.image(397, newArray[3], 'questionConcable'),
+                        this.add.image(803, 93, 'answerConcable'),
+                        this.add.image(803, 278, 'answerConcable'),
+                        this.add.image(803, 463, 'answerConcable'),
+                        this.add.image(803, 648, 'answerConcable'),
+                    ]
+
+
+                    //created array of all images and their matches and used randomized array for question Y coordinate
+                    images = [
+                        this.add.image(397, newArray[0], 'questioncable').setInteractive({useHandCursor: true}).setData('match', 'answercable1').setData('name', 'questioncable1'),
+                        this.add.image(397, newArray[1], 'questioncable').setInteractive({useHandCursor: true}).setData('match', 'answercable2').setData('name', 'questioncable2'),
+                        this.add.image(397, newArray[2], 'questioncable').setInteractive({useHandCursor: true}).setData('match', 'answercable3').setData('name', 'questioncable3'),
+                        this.add.image(397, newArray[3], 'questioncable').setInteractive({useHandCursor: true}).setData('match', 'answercable4').setData('name', 'questioncable4'),
+                        this.add.image(803, 93, 'answercable').setInteractive({useHandCursor: true}).setData('match', 'questioncable1').setData('name', 'answercable1'),
+                        this.add.image(803, 278, 'answercable').setInteractive({useHandCursor: true}).setData('match', 'questioncable2').setData('name', 'answercable2'),
+                        this.add.image(803, 463, 'answercable').setInteractive({useHandCursor: true}).setData('match', 'questioncable3').setData('name', 'answercable3'),
+                        this.add.image(803, 648, 'answercable').setInteractive({useHandCursor: true}).setData('match', 'questioncable4').setData('name', 'answercable4'),
+                    ];
+
+                    // adding green cable images for when cables connect correctly and setting them invisible
+                    var q1a1 = this.add.image(600, 315, 'q1a1');
+                    q1a1.visible = false;
+
+                    var q2a2 = this.add.image(600, 500, 'q1a1');
+                    q2a2.visible = false;
+
+                    var q3a3 = this.add.image(600, 686, 'q1a1');
+                    q3a3.visible = false;
+
+                    var q4a4 = this.add.image(600, 870, 'q1a1');
+                    q4a4.visible = false;
+
+                    var q1a2 = this.add.image(600, 370, 'q1a2');
+                    q1a2.visible = false;
+
+                    var q2a3 = this.add.image(600, 555, 'q1a2')
+                    q2a3.visible = false;
+
+                    var q3a4 = this.add.image(600, 740, 'q1a2')
+                    q3a4.visible = false;
+
+                    var q1a3 = this.add.image(600, 368, 'q1a3')
+                    q1a3.visible = false;
+
+                    var q2a4 = this.add.image(600, 553, 'q1a3')
+                    q2a4.visible = false;
+
+                    var q1a4 = this.add.image(600, 370, 'q1a4')
+                    q1a4.visible = false;
+
+                    var q2a1 = this.add.image(600, 369, 'q2a1')
+                    q2a1.visible = false;
+
+                    var q3a2 = this.add.image(600, 554, 'q2a1')
+                    q3a2.visible = false;
+
+                    var q4a3 = this.add.image(600, 739, 'q2a1')
+                    q4a3.visible = false;
+
+                    var q3a1 = this.add.image(600, 369, 'q3a1')
+                    q3a1.visible = false;
+
+                    var q4a2 = this.add.image(600, 554, 'q3a1')
+                    q4a2.visible = false;
+
+                    var q4a1 = this.add.image(600, 369, 'q4a1')
+                    q4a1.visible = false;
+
+                    // adding red cable images for when cables connect wrong and setting them invisible
+                    var q1a1f = this.add.image(600, 315, 'q1a1f');
+                    q1a1f.visible = false;
+
+                    var q2a2f = this.add.image(600, 500, 'q1a1f');
+                    q2a2f.visible = false;
+
+                    var q3a3f = this.add.image(600, 686, 'q1a1f');
+                    q3a3f.visible = false;
+
+                    var q4a4f = this.add.image(600, 870, 'q1a1f');
+                    q4a4f.visible = false;
+
+                    var q1a2f = this.add.image(600, 370, 'q1a2f');
+                    q1a2f.visible = false;
+
+                    var q2a3f = this.add.image(600, 555, 'q1a2f')
+                    q2a3f.visible = false;
+
+                    var q3a4f = this.add.image(600, 740, 'q1a2f')
+                    q3a4f.visible = false;
+
+                    var q1a3f = this.add.image(600, 368, 'q1a3f')
+                    q1a3f.visible = false;
+
+                    var q2a4f = this.add.image(600, 553, 'q1a3f')
+                    q2a4f.visible = false;
+
+                    var q1a4f = this.add.image(600, 370, 'q1a4f')
+                    q1a4f.visible = false;
+
+                    var q2a1f = this.add.image(600, 369, 'q2a1f')
+                    q2a1f.visible = false;
+
+                    var q3a2f = this.add.image(600, 554, 'q2a1f')
+                    q3a2f.visible = false;
+
+                    var q4a3f = this.add.image(600, 739, 'q2a1f')
+                    q4a3f.visible = false;
+
+                    var q3a1f = this.add.image(600, 369, 'q3a1f')
+                    q3a1f.visible = false;
+
+                    var q4a2f = this.add.image(600, 554, 'q3a1f')
+                    q4a2f.visible = false;
+
+                    var q4a1f = this.add.image(600, 369, 'q4a1f')
+                    q4a1f.visible = false;
+
+                    console.log('create');
+                    //time for game
+                    // 2:00 in seconds
+                    this.initialTime = 120;
+                    //time for redirecting to score page
+                    this.redirect = 5;
+
+                    //set image for timer
+                    var clock = this.add.image(593, 53, 'timer')
+                    clock.setScale(0.13)
+
+                    //set text for timer
+                    text = this.add.text(573, 45, formatTime(this.initialTime), {fill: "#000000 "});
+
+
+                    //intro
+                    var bg2 = this.add.image(400, 300, 'background').setInteractive();
+                    bg2.setScale(2);
+
+                    // game rules
+                    var rules = this.add.text(490, 100, 'Cable Game', {
+                        font: "35px Sans-Serif",
+                        fill: "#000000",
+                        align: "center"
+                    })
+
+                    var rules2 = this.add.text(290, 150, ' In this game you have to connect the right side cables\nwith' +
+                        ' the left side ones before the timer reaches 0. Each\ncable corresponds to the question or the answer that is\nbeside it. ' +
+                        'On the left side you have the questions and\non the right side the answers. Each time you choose a\nwrong answer the cables ' +
+                        'connect with red color and you\nlose 5 seconds from your time. When you choose a right\nanswer the cables  connect with green color.' +
+                        ' Your score\nwill depend on the time left after you finish the game. If\nthe timer reaches 0 before you connect ' +
+                        'all the cables\nyou lose the game and you get a 0 score. Press the play\nbutton bellow to start the game.\n\n                       ' +
+                        '          Good Luck!', {
+                        font: "25px Sans-Serif",
+                        fill: "#000000"
+                    })
+
+                    //play button(when pushed start timer and reveal game)
+                    var play = this.add.image(583 , 640 , 'play').setInteractive({useHandCursor: true}).on('pointerdown', function () {
+                     timedEvent.paused = false;
+                     bg2.visible = false;
+                     play.visible = false;
+                     rules.visible = false;
+                     rules2.visible = false;
+
+                    })
+
+                //border for displaying final score
+                var score_border = this.add.image(600,370,'textBorder')
+                // texts for final score board
+                var score = this.add.text(590, 360, (120 - this.initialTime), {fill: "#FFFFFF ",font: "30px Sans-Serif" , align: "center"});
+                var score_text = this.add.text(514,310,'Final score', {fill: "#FFFFFF ",font: "35px Sans-Serif"})
+                var redirectText = this.add.text(470,420,' Directing to results page in', {fill: "#FFFFFF ",font: "20px Sans-Serif"})
+                var text2 = this.add.text(720, 420, this.redirect, {fill: "#FFFFFF ", font: "20px Sans-Serif"});
+                var scoreNA = this.add.text(573,360,"N/A", {fill: "#FFFFFF ",font: "30px Sans-Serif"})
+                var replay = this.add.image(532,429,'replay').setInteractive({useHandCursor: true});
+                var home = this.add.image(681,428,'home').setInteractive({useHandCursor: true});
+                home.setScale(0.32)
+                replay.setScale(0.3)
+                score.visible = false;
+                text2.visible = false;
+                score_border.visible = false;
+                score_text.visible = false;
+                redirectText.visible = false;
+                scoreNA.visible = false;
+                replay.visible = false;
+                home.visible = false;
+
+                //home page button
+                //refresh page and set tint when pointer down
+                home.on('pointerdown', function (pointer) {
+                    //set tint for when image is clicked
+                    this.setTint(0x888888);
+                    window.location.href="/"
+
+                })
+
+                //clear button tint when pointer up
+                 home.on('pointerup', function (pointer) {
+                            this.clearTint();
+                        });
+
+                //replay button
+                //refresh page and set tint when pointer down
+                replay.on('pointerdown', function (pointer) {
+                    //set tint for when image is clicked
+                    this.setTint(0x888888);
+                    window.location.href=window.location.href
+
+                })
+
+                //clear button tint when pointer up
+                 replay.on('pointerup', function (pointer) {
+                            this.clearTint();
+                        });
+
+                // fullscreen button
+                var button = this.add.image(1160, 40, 'fullscreen').setInteractive({useHandCursor: true});
+                button.setScale(0.1)
+
+                // set game to fullscreen
+                button.on('pointerup', function () {
+
+                    if (this.scale.isFullscreen)
+                    {
+                        button.setFrame(0);
+                        this.scale.stopFullscreen();
+                    }
+                    else
+                    {
+                        button.setFrame(1);
+                        this.scale.startFullscreen();
+                    }
+                }, this);
+
+
+
+                    // Each 950 ms call onEvent
+                    if (this.initialTime > 0) {
+                        timedEvent = this.time.addEvent({
+                            delay: 950,
+                            callback: onEvent,
+                            callbackScope: this,
+                            loop: true
+                        });
+                        timedEvent.paused = true;
+                    }
+
+                    // end game if timer reaches zero
+                    function endGame(){
+                                timedEvent.paused = true;
+                                score_border.visible = true;
+                                score_text.visible = true;
+                                scoreNA.visible = true;
+                                replay.visible = true;
+                                home.visible = true;
+                                images[0].visible = false;
+                                images[1].visible = false;
+                                images[2].visible = false;
+                                images[3].visible = false;
+                                images[4].visible = false;
+                                images[5].visible = false;
+                                images[6].visible = false;
+                                images[7].visible = false;
+
+                            }
+
+                    //creating event for looping redirect timer
+                    if (this.redirect > 0) {
+                        redirectEvent = this.time.addEvent({
+                            delay: 950,
+                            callback: redirectTimer,
+                            callbackScope: this,
+                            loop: true
+                        });
+                        redirectEvent.paused = true;
+                    }
+
+                    //timer for redirecting to score page
+                    function redirectTimer(){
+                        this.redirect -=1;
+                        if(this.redirect===0){
+                            redirectEvent.paused = true;
+                            document.getElementById("score-holder").value = score.text;
+                            document.getElementById("cable_game").submit();
+                        }
+                        text2.setText(this.redirect);
+                    }
+
+                    // update clock
+                    function onEvent (){
+                        // timer count normal
+                        if(this.initialTime > 0 && deduct===false) {
+                            // - 1 second
+                            this.initialTime -= 1;
+                            text.setText(formatTime(this.initialTime)
+                            );
+                            //final score is initialTime minus time left
+                            score.setText((120-this.initialTime))
+                            //timer deduct 5 seconds and then keep counting normal
+                        }else if(this.initialTime > 0 && deduct===true){
+                            // - 5 second
+                            this.initialTime -= 5;
+                            //if timer goes below 0 then change it to 0
+                            if(this.initialTime<=0){
+                                this.initialTime=0
+                            }
+                            text.setText(formatTime(this.initialTime));
+                            score.setText((120-this.initialTime))
+                            //reset deduction
+                            deduct=false;
+                        }else if(this.initialTime<=0){
+                            endGame()
+                        }
+                    }
+
+                    //function for when clicking on every image in the images array
+                    images.forEach(function (image) {
+                        image.on('pointerdown', function (pointer) {
+                            //set tint for when image is clicked
+                            this.setTint(0x888888);
+
+                            // if an object is already selected and second object is an answer cable
+                            if (lineActive === true && image.x===803) {
+                                main.input.removeListener('pointermove');
+                                // if images match
+                                if (image.getData('name') === firstSelected.getData('match')) {
+                                    // line coordinates
+                                    line.setTo(firstSelected.x, firstSelected.y, image.x, image.y);
+                                    // add image successful set to completed Nodes array
+                                    completedNodes.push(firstSelected.getData('name'));
+                                    completedNodes.push(image.getData('name'));
+                                    // add successful line to lines array
+                                    lines.push(line);
+
+                                    // destroy images when cables connect
+                                    image.visible=false;
+                                    firstSelected.visible = false;
+                                    line.destroy()
+
+                                    // if cables connect turn green cable images visible and all the other wrong choices invisible
+                                    if (image.y === 93 && firstSelected.y === 93) {
+                                        q1a1.visible = true;
+                                        q1a2f.visible =false;
+                                        q1a3f.visible =false;
+                                        q1a4f.visible =false;
+                                    } else if (image.y === 278 && firstSelected.y === 278) {
+                                        q2a2.visible = true;
+                                        q2a1f.visible =false;
+                                        q2a3f.visible =false;
+                                        q2a4f.visible =false;
+                                    } else if (image.y === 463 && firstSelected.y === 463) {
+                                        q3a3.visible = true;
+                                        q3a1f.visible =false;
+                                        q3a2f.visible =false;
+                                        q3a4f.visible =false;
+                                    } else if (image.y === 648 && firstSelected.y === 648) {
+                                        q4a4.visible = true;
+                                        q4a1f.visible =false;
+                                        q4a2f.visible =false;
+                                        q4a3f.visible =false;
+                                    } else if (image.y === 278 && firstSelected.y === 93) {
+                                        q1a2.visible = true;
+                                        q1a1f.visible =false;
+                                        q1a3f.visible =false;
+                                        q1a4f.visible =false;
+                                    } else if (image.y === 463 && firstSelected.y === 278) {
+                                        q2a3.visible = true;
+                                        q2a1f.visible =false;
+                                        q2a2f.visible =false;
+                                        q2a4f.visible =false;
+                                    } else if (image.y === 648 && firstSelected.y === 463) {
+                                        q3a4.visible = true;
+                                        q3a1f.visible =false;
+                                        q3a2f.visible =false;
+                                        q3a3f.visible =false;
+                                    } else if (image.y === 463 && firstSelected.y === 93) {
+                                        q1a3.visible = true;
+                                        q1a1f.visible =false;
+                                        q1a2f.visible =false;
+                                        q1a4f.visible =false;
+                                    } else if (image.y === 648 && firstSelected.y === 278) {
+                                        q2a4.visible = true;
+                                        q2a1f.visible =false;
+                                        q2a2f.visible =false;
+                                        q2a3f.visible =false;
+                                    } else if (image.y === 648 && firstSelected.y === 93) {
+                                        q1a4.visible = true;
+                                        q1a1f.visible =false;
+                                        q1a2f.visible =false;
+                                        q1a3f.visible =false;
+                                    } else if (image.y === 93 && firstSelected.y === 278) {
+                                        q2a1.visible = true;
+                                        q2a2f.visible =false;
+                                        q2a3f.visible =false;
+                                        q2a4f.visible =false;
+                                    } else if (image.y === 278 && firstSelected.y === 463) {
+                                        q3a2.visible = true;
+                                        q3a1f.visible =false;
+                                        q3a3f.visible =false;
+                                        q3a4f.visible =false;
+                                    } else if (image.y === 463 && firstSelected.y === 648) {
+                                        q4a3.visible = true;
+                                        q4a1f.visible =false;
+                                        q4a2f.visible =false;
+                                        q4a4f.visible =false;
+                                    } else if (image.y === 93 && firstSelected.y === 463) {
+                                        q3a1.visible = true;
+                                        q3a2f.visible =false;
+                                        q3a3f.visible =false;
+                                        q3a4f.visible =false;
+                                    } else if (image.y === 278 && firstSelected.y === 648) {
+                                        q4a2.visible = true;
+                                        q4a1f.visible =false;
+                                        q4a3f.visible =false;
+                                        q4a4f.visible =false;
+                                    } else if (image.y === 93 && firstSelected.y === 648) {
+                                        q4a1.visible = true;
+                                        q4a2f.visible =false;
+                                        q4a3f.visible =false;
+                                        q4a4f.visible =false;
+                                    }
+
+                                     // count right answers
+                                    qnaCount = qnaCount +1
+                                    if(qnaCount===4){
+                                        score.text = parseInt(score.text).toString()
+                                        timedEvent.paused = true;
+                                        score.visible = true;
+                                        score_border.visible = true;
+                                        score_text.visible = true;
+                                        redirectEvent.paused=false;
+                                        text2.visible = true;
+                                        redirectText.visible = true;
+                                    }
+
+                                    lineActive = false;
+                                    image.setData('selected', true);
+                                    firstSelected = null;
+
+                                } else {
+                                    //deduct is true so 5 secs are being deducted from timer
+                                     deduct=true;
+                                     if(image.y===93){
+                                         answsr1=firstSelected.y
+                                     }else if(image.y===278){
+                                             answsr2=firstSelected.y
+                                     }else if(image.y===463){
+                                         answsr3=firstSelected.y
+                                     }else if(image.y===648){
+                                         answsr4=firstSelected.y
+                                     }
+
+
+
+                                    // if cables DON'T connect turn red cable images visible and all the other wrong choices invisible
+                                    image.visible = false;
+                                    if (image.y === 93 && firstSelected.y === 93 && image.x===803) {
+                                        q1a1f.visible = true;
+                                        q1a2f.visible =false;
+                                        q1a3f.visible =false;
+                                        q1a4f.visible =false;
+                                    } else if (image.y === 278 && firstSelected.y === 278) {
+                                        q2a2f.visible = true;
+                                        q2a1f.visible =false;
+                                        q2a3f.visible =false;
+                                        q2a4f.visible =false;
+                                    } else if (image.y === 463 && firstSelected.y === 463) {
+                                        q3a3f.visible = true;
+                                        q3a1f.visible =false;
+                                        q3a2f.visible =false;
+                                        q3a4f.visible =false;
+                                    } else if (image.y === 648 && firstSelected.y === 648) {
+                                        q4a4f.visible = true;
+                                        q4a1f.visible =false;
+                                        q4a2f.visible =false;
+                                        q4a3f.visible =false;
+                                    } else if (image.y === 278 && firstSelected.y === 93) {
+                                        q1a2f.visible = true;
+                                        q1a1f.visible =false;
+                                        q1a3f.visible =false;
+                                        q1a4f.visible =false;
+                                    } else if (image.y === 463 && firstSelected.y === 278) {
+                                        q2a3f.visible = true;
+                                        q2a1f.visible =false;
+                                        q2a2f.visible =false;
+                                        q2a4f.visible =false;
+                                    } else if (image.y === 648 && firstSelected.y === 463) {
+                                        q3a4f.visible = true;
+                                        q3a1f.visible =false;
+                                        q3a2f.visible =false;
+                                        q3a3f.visible =false;
+                                    } else if (image.y === 463 && firstSelected.y === 93) {
+                                        q1a3f.visible = true;
+                                        q1a1f.visible =false;
+                                        q1a2f.visible =false;
+                                        q1a4f.visible =false;
+                                    } else if (image.y === 648 && firstSelected.y === 278) {
+                                        q2a4f.visible = true;
+                                        q2a1f.visible =false;
+                                        q2a2f.visible =false;
+                                        q2a3f.visible =false;
+                                    } else if (image.y === 648 && firstSelected.y === 93) {
+                                        q1a4f.visible = true;
+                                        q1a1f.visible =false;
+                                        q1a2f.visible =false;
+                                        q1a3f.visible =false;
+                                    } else if (image.y === 93 && firstSelected.y === 278) {
+                                        q2a1f.visible = true;
+                                        q2a2f.visible =false;
+                                        q2a3f.visible =false;
+                                        q2a4f.visible =false;
+                                    } else if (image.y === 278 && firstSelected.y === 463) {
+                                        q3a2f.visible = true;
+                                        q3a1f.visible =false;
+                                        q3a3f.visible =false;
+                                        q3a4f.visible =false;
+                                    } else if (image.y === 463 && firstSelected.y === 648) {
+                                        q4a3f.visible = true;
+                                        q4a1f.visible =false;
+                                        q4a2f.visible =false;
+                                        q4a4f.visible =false;
+                                    } else if (image.y === 93 && firstSelected.y === 463) {
+                                        q3a1f.visible = true;
+                                        q3a2f.visible =false;
+                                        q3a3f.visible =false;
+                                        q3a4f.visible =false;
+                                    } else if (image.y === 278 && firstSelected.y === 648) {
+                                        q4a2f.visible = true;
+                                        q4a1f.visible =false;
+                                        q4a3f.visible =false;
+                                        q4a4f.visible =false;
+                                    } else if (image.y === 93 && firstSelected.y === 648) {
+                                        q4a1f.visible = true;
+                                        q4a2f.visible =false;
+                                        q4a3f.visible =false;
+                                        q4a4f.visible =false;
+                                    }
+                                    line.destroy();
+                                    lineActive = false;
+                                    firstSelected = null;
+                                    reset = true;
+                                }
+                            }
+
+                            // if nothing is being selected yet
+                            if (lineActive === false && !image.getData('selected') && !reset) {
+                                // Make sure it's not one that's already been completed and the first option is a question
+                                if (!completedNodes.includes(image.getData('name')) && image.x===397) {
+                                    //if a question cable is selected again delete the red cable connected to it
+                                    if (image.y === 93) {
+                                        if(answsr1===93){
+                                            images[4].visible = true;
+                                            answsr1=0;
+                                        }else if(answsr2===93){
+                                            images[5].visible = true;
+                                            answsr2=0;
+                                        }else if(answsr3===93){
+                                            images[6].visible = true;
+                                            answsr3=0;
+                                        }else if(answsr4===93){
+                                            images[7].visible = true;
+                                            answsr4=0;
+                                        }
+                                        q1a1f.visible = false;
+                                        q1a2f.visible =false;
+                                        q1a3f.visible =false;
+                                        q1a4f.visible =false;
+                                    } else if (image.y === 278) {
+                                        if(answsr1===278){
+                                            images[4].visible = true;
+                                            answsr1=0;
+                                        }else if(answsr2===278){
+                                            images[5].visible = true;
+                                            answsr2=0;
+                                        }else if(answsr3===278){
+                                            images[6].visible = true;
+                                            answsr3=0;
+                                        }else if(answsr4===278){
+                                            images[7].visible = true;
+                                            answsr4=0;
+                                        }
+                                        q2a2f.visible = false;
+                                        q2a1f.visible =false;
+                                        q2a3f.visible =false;
+                                        q2a4f.visible =false;
+                                    } else if (image.y === 463) {
+                                        if(answsr1===463){
+                                            images[4].visible = true;
+                                            answsr1=0;
+                                        }else if(answsr2===463){
+                                            images[5].visible = true;
+                                            answsr2=0;
+                                        }else if(answsr3===463){
+                                            images[6].visible = true;
+                                            answsr3=0;
+                                        }else if(answsr4===463){
+                                            images[7].visible = true;
+                                            answsr4=0;
+                                        }
+                                        q3a4f.visible = false;
+                                        q3a1f.visible =false;
+                                        q3a2f.visible =false;
+                                        q3a3f.visible =false;
+                                    } else if (image.y === 648) {
+                                        if(answsr1===648){
+                                            images[4].visible = true;
+                                            answsr1=0;
+                                        }else if(answsr2===648){
+                                            images[5].visible = true;
+                                            answsr2=0;
+                                        }else if(answsr3===648){
+                                            images[6].visible = true;
+                                            answsr3=0;
+                                        }else if(answsr4===648){
+                                            images[7].visible = true;
+                                            answsr4=0;
+                                        }
+                                        q4a3f.visible = false;
+                                        q4a1f.visible =false;
+                                        q4a2f.visible =false;
+                                        q4a4f.visible=false;
+                                    }
+                                    // create line in those coordinates
+                                    line = main.add.line(0, 0, image.x, image.y, pointer.x, pointer.y, 0xd50102).setOrigin(0, 0);
+                                    // set line's width
+                                    line.setLineWidth(1);
+                                    // line follows cursor
+                                    main.input.on('pointermove', function (pointer, gameObject) {
+                                        line.setTo(image.x, image.y, pointer.x, pointer.y);
+                                    });
+                                    lineActive = true;
+                                    image.setData('selected', true);
+                                    firstSelected = image;
+                                }
+                            }
+
+                            // Unselect any failed attempts
+                            image.setData('selected', false);
+                            reset = false;
+                        })
+
+                        //clear tint
+                        image.on('pointerout', function (pointer) {
+                            this.clearTint();
+                        });
+                        //clear tint
+                        image.on('pointerup', function (pointer) {
+                            this.clearTint();
+                        });
+                    });
+
+
+                    // Clicking the background causes the current line to disappear and reset related objects/images
+                    bg.on('pointerdown', function (pointer) {
+                        if (lineActive) {
+                            if (line) {
+                                line.destroy();
+                                main.input.removeListener('pointermove');
+                            }
+                            lineActive = false;
+                            firstSelected.setData('selected', false);
+                            firstSelected = null;
+                            reset = false;
+                        }
+                    });
+
+
+            }
+
+            // create time format
+            function formatTime(seconds){
+                //minutes
+                var minutes = Math.floor(seconds/60);
+                //seconds
+                var partInSeconds = seconds%60;
+                //adds left zeros to seconds
+                partInSeconds = partInSeconds.toString().padStart(2,'0');
+                //returns formatted time
+                return `${minutes}:${partInSeconds}`;
+            }
+
+            // change line if string is longer than a certain length
+             function lineBreak (strng){
+                 if (strng.length <30 ){
+                    return strng
+                 }else{
+                     for (i=0; i<strng.length;i++){
+                         if(i>15 && strng.charAt(i)===" "){
+                             var finalS = strng.slice(0, i) + "\n" + lineBreak(strng.slice(i, strng.length));
+
+                             return finalS
+                             break;
+                         }
+
+                     }
+                }
+             }
+
+            function update() {
+                 }
+
+
+         </script>
+
+            {# input to hold score for passing to results page #}
+          <input type="hidden" name="score-holder" id="score-holder" value="blank">
+
+         </form>
+
+
+    </body>
+</html>

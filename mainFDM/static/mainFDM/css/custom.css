@@ -1,0 +1,374 @@
+html {
+  position: relative;
+    min-width: fit-content;
+  min-height: 100%;
+}
+
+body {
+    padding-bottom: 10rem;
+    padding-top: 6rem;
+    font-family: open sans, sans-serif;
+}
+
+/* specific body styling for Home page */
+#home{
+    background-image: url('https://www.fdmgroup.com/wp-content/uploads/herobanner-uk-homepage-2.jpg');
+    background-position: bottom right;
+    background-color: #000000;
+    background-repeat: repeat-y;
+    min-height: 60rem; /*this causes the page to scroll*/
+}
+
+/* specific body styling for all pages extending base.html */
+#base{
+    background-color: #ffffff;
+    padding-bottom: 8rem;
+    min-height: 35rem;
+    margin-inline: 0;
+    min-width: fit-content;
+}
+
+/* navbar styling starts here */
+.navbar {
+    padding-bottom: 0;
+    margin: 0;
+    background-color: #202025;
+    border-top: 3px solid #1daded;
+    font-size: 18px;
+    color: #1daded;
+}
+
+#fdm_logo_header{
+    width: 126px;
+    height: 60px;
+    border: 1px;
+    padding:0;
+    margin:0;
+}
+
+.gradient-bar{
+    background: linear-gradient(40deg, rgb(21, 65, 200), rgba(136,32,187,1));
+    height: 12px;
+    padding: 0;
+    margin: 0;
+    opacity: 100%;
+}
+
+#upper-bar{
+    height:14px
+}
+/* end of navbar styling */
+
+/* styling of the main body of the page */
+
+.background-block{
+    min-width: fit-content;
+    max-width: border-box;
+    padding-inline: 2rem;
+    background-color: #f5f5f5;
+}
+
+:root {
+  --jumbotron-padding-y: 1rem;
+}
+
+.jumbotron {
+  padding-top: var(--jumbotron-padding-y);
+  padding-bottom: var(--jumbotron-padding-y);
+  margin-bottom: 0;
+
+}
+
+@media (min-width: 768px) {
+  .jumbotron {
+    padding-top: calc(var(--jumbotron-padding-y) * 2);
+    padding-bottom: calc(var(--jumbotron-padding-y) * 2);
+  }
+}
+
+.jumbotron p:last-child {
+  margin-bottom: 0;
+}
+
+.jumbotron-heading {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 4.4em;
+    text-align: center;
+    color: #FFFFFF;
+    text-shadow: 0 8px 4px #212026;
+}
+
+/*Header text on each of the pages extending base*/
+.header{
+    font-size: 4rem;
+    font-weight: 300;
+    color: #1daded;
+    margin:0;
+    text-shadow: 0 6px 6px #212026;
+    text-align: center;
+}
+
+/*Any header-style text on each of the pages extending base that is below the 'header' text*/
+.subheader{
+    font-size: 3rem;
+    font-weight: 300;
+    color: #1daded;
+    margin:0;
+    padding-bottom: 15px;
+    text-shadow: 0 6px 6px #212026;
+    text-align: center;
+}
+
+/*Home page intro to the programmes*/
+#intro{
+    font-style: normal;
+    font-weight: 600;
+    font-size: 2.2em;
+    text-align: center;
+
+    color: #FFFFFF;
+    text-shadow: 0 6px 4px #000000;
+}
+
+.jumbotron .container {
+  max-width: 100%;
+}
+
+/* form fields highlight when selected */
+.form-control:focus, .form-select:focus{
+    border-color: #1541c8;
+    box-shadow: inset 0 0 3px 1px rgba(21, 65, 200, 1), 0 0 2px 3px rgba(21, 65, 200, 1);
+    border-width: 1px;
+}
+
+/* form labels */
+.form-label{
+    color: #ffffff;
+    font-weight: 500;
+    text-shadow: 0 3px 2px #212026;
+    min-width: max-content;
+    width: 8rem;
+}
+
+/* unrelated text inside the blue column cards */
+.column-text{
+    color: #FFFFFF;
+    text-shadow: 0 1px 2px #212026;
+    text-align: center;
+    word-break: break-word;
+    text-wrap: normal;
+    padding-bottom: 2rem;
+}
+
+.form-control::placeholder{
+    color: #202025;
+}
+
+/* any card or column with content */
+.form-col{
+    background: #1daded;
+    border-radius: 30px;
+    background-clip: border-box;
+    margin-bottom: 20px;
+    min-width: fit-content;
+
+    /*FDM's blue on black shadow*/
+    -webkit-box-shadow: 0 0 25px 0 #202025, 0 20px 25px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 25px 0 #202025, 0 20px 25px 0 rgba(0,0,0,.2);
+}
+
+#login-form-col,#register-form-col{
+    min-width: max-content;
+    max-width: max-content;
+}
+
+.form-title{
+    text-align: center;
+    padding-bottom: 15px;
+    color: white;
+    font-size: 2rem;
+    text-shadow: 0 4px 2px #212026;
+}
+
+/* redirection links on forms, e.g. forgotten password link */
+.form-link{
+    color: #ffffff;
+}
+
+/* our general button styling */
+.btn-grad{
+    border-radius: 50px;
+    background: #1541c8;
+    background: linear-gradient(40deg,#1541c8 0,#8820bb 100%);
+    color: white;
+    border: none;
+}
+
+#form-btn{
+    font-size: 1.3rem;
+    padding: 10px;
+    padding-inline: 10%;
+    font-weight: 300;
+}
+
+#get-b-score{
+    font-size: 1.3rem;
+    padding-inline: 15%;
+    font-weight: 300;
+}
+
+/* success messages */
+#success{
+    margin-top: 20px;
+    margin-inline: 10px;
+    margin-bottom: 10px;
+}
+
+/* beginning of leader board and tables styling */
+
+.table{
+    background: #202025;
+    color: #FFFFFF;
+    border-collapse: collapse;
+    border-style: hidden;
+    margin-inline: auto;
+    max-width: border-box;
+    word-wrap: break-word;
+    border-radius: 20px;
+}
+
+.table-head{
+    border-bottom: 2px solid #FFFFFF;
+}
+
+/* table row */
+td{
+    word-break: break-word;
+}
+
+/* styling of the stream cards on Home page */
+.card{
+    background-clip:padding-box;
+    border: 10px solid rgba(255, 255, 255, 0.5);
+    border-radius: 30px;
+}
+
+.card-img{
+    max-height: 350px;
+    border-radius: 20px;
+}
+
+.card-link{
+    color:#fff;
+    font-weight:600;
+    font-size: 20px;
+    text-decoration: none;
+}
+
+.card-link:visited:hover{
+    color: #811d1d
+}
+
+.card-link:hover{
+    color: #9551cb;
+    text-decoration: underline;
+}
+
+.stream_btn {
+    background-color: #1541c8;
+    padding-block: 0;
+    position: relative;
+    right: 0;
+    bottom: 0;
+    border-color: #1541C8;
+    border-radius: 22px;
+    text-align: center;
+    font-size: 1.2rem;
+    max-font-size: 1.2rem;
+    color: white;
+}
+
+/* button container on home page */
+.btn-container {
+    position: absolute;
+    bottom: 10px;
+}
+
+/* quiz button on home page */
+.quiz-btn{
+    font-style: normal;
+    font-weight: 600;
+    font-size: 24px;
+    text-align: center;
+    text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    background-color: rgba(255, 255, 255, 0.7);
+    border: none;
+}
+
+/* footer styling starts here */
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    margin-bottom:0;
+    border-bottom: 8px solid #1daded;
+}
+
+#helper-login-btn{
+    font-weight: 600;
+    font-size: 12px;
+    display: block;
+    max-width: max-content;
+    padding-inline: 20px;
+    text-decoration: none;
+    text-wrap: none;
+    word-break: keep-all;
+}
+
+#licence{
+    color: white;
+    font-size:12px;
+    font-family: open sans, sans-serif;
+    font-weight: 300;
+}
+
+/* social media icons */
+.icon-effect{
+    align-items: center;
+    padding-left: 0;
+    list-style-type: disc;
+    font-weight: 300;
+    width: max-content;
+}
+
+.icon-effect li{
+    list-style: none;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    float: left;
+    margin: 10px;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+}
+
+.icon-effect a {
+    color: #fff;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    background: linear-gradient(40deg,#1541c8 0,#8820bb 100%);
+    border-radius: 50%;
+    padding-block: 30%;
+    padding-inline: 40%;
+    cursor: pointer;
+}
+
+#link-fb{
+    width: 20px;
+    height: 15px;
+}

@@ -1,0 +1,317 @@
+
+.hide{
+    display: none;
+}
+
+.hide_2{
+    display: none;
+}
+
+
+.html, body{
+    background-color: #C4C4C4;
+    font-family: open sans, sans-serif;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+    font-family: open sans, sans-serif;
+}
+
+.main-container {
+  ...
+    position: relative;
+    width:1200px;
+}
+
+.child-container {
+  /* Center vertically and horizontally */
+    height: 557px;
+    width: 700px;
+    background-color: #1daded;
+    padding: 50px 50px 50px 50px;
+    border-radius: 25px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -300px 0 0 -350px; /* apply negative top and left margins to truly center the element */
+}
+
+.status-bar {
+    font-size: 2.0rem;
+    background-color: white;
+    border-radius: 10px;
+    border: 5px solid purple;
+}
+
+
+.container-2 {
+    padding-top: 50px;
+}
+
+
+#timer {
+    font-size: 2.8rem;
+    background-color: white;
+    color: black;
+    text-align: center;
+    width: 87%;
+    border-radius: 10px;
+    border: 5px solid purple;
+
+}
+
+#leftbox {
+    float:left;
+    width:25%;
+    height:280px;
+}
+#middlebox{
+    float:left;
+    width:50%;
+    height:280px;
+    align-content: center;
+}
+#rightbox{
+    float:right;
+    width:25%;
+    height:280px;
+}
+
+#grid{
+   display: flex;
+    flex-wrap: wrap;
+    width:86%;
+    height: 200%;
+    background-color: #C4C4C4;
+    border: 5px solid purple;
+
+
+
+}
+
+#question{
+ font-size: 2.0rem;
+    background-color: white;
+    border-radius: 10px;
+    text-align: center;
+    border: 5px solid purple;
+}
+#answer1{
+  float:top;
+  text-align: center;
+    color:black;
+  width: 300%;
+    font-size: 1.4rem;
+    background-color: white;
+    border-radius: 10px;
+    border: 5px solid purple;
+
+
+}
+
+#answer2{
+    width: 300%;
+  float:top;
+ color:black;
+  text-align: center;
+    font-size: 1.4rem;
+    background-color: white;
+    border-radius: 10px;
+    border: 5px solid purple;
+}
+#answer3{
+    width: 300%;
+  float:bottom;
+  color:black;
+  text-align: center;
+    font-size: 1.4rem;
+    background-color: white;
+    border-radius: 10px;
+    border: 5px solid purple;
+
+}
+
+.pipe{
+    /*pipe size*/
+    background-size: 50px;
+
+    width: 75px;
+    height: 75px;
+
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.btn_end {
+    background-color: white;
+    color: black;
+    border-radius: 10px;
+    border: 5px solid purple;
+    font-size: 25px;
+}
+
+#sub-btn{
+    position: relative;
+    left: -3.5%;
+}
+
+
+/* end points */
+
+.u {
+    background-image: url("../images/end.png");
+    transform: rotate(180deg);
+}
+
+.u.a{
+    background-image: url("../images/activated_end.png");
+}
+
+.d {
+    background-image: url("../images/end.png");
+    transform: rotate(0deg);
+}
+
+.d.a{
+    background-image: url("../images/activated_end.png");
+}
+
+.r {
+    background-image: url("../images/end.png");
+    transform: rotate(270deg);
+}
+
+.r.a{
+    background-image: url("../images/activated_end.png");
+}
+
+.l{
+    background-image: url("../images/end.png");
+    transform: rotate(90deg);
+}
+
+.l.a{
+    background-image: url("../images/activated_end.png");
+}
+
+/* straight */
+.u.d{
+    background-image: url("../images/straight.png");
+}
+
+.u.d.a{
+    background-image: url("../images/activated_straight.png");
+}
+
+.l.r{
+    background-image: url("../images/straight.png");
+    transform: rotate(90deg);
+}
+
+.l.r.a{
+    background-image: url("../images/activated_straight.png");
+}
+
+/* Corners */
+.u.r{
+    background-image: url("../images/corner.png");
+    transform: rotate(0deg);
+}
+
+.u.r.a{
+    background-image: url("../images/activated_corner.png");
+}
+
+.u.l{
+    background-image: url("../images/corner.png");
+    transform: rotate(270deg);
+}
+
+.u.l.a{
+    background-image: url("../images/activated_corner.png");
+}
+
+.d.r{
+    background-image: url("../images/corner.png");
+    transform: rotate(90deg);
+}
+
+.d.r.a{
+    background-image: url("../images/activated_corner.png");
+}
+
+.d.l{
+    background-image: url("../images/corner.png");
+    transform: rotate(180deg);
+}
+
+.d.l.a{
+    background-image: url("../images/activated_corner.png");
+}
+
+/* T split */
+.u.r.l{
+    background-image: url("../images/tsplit.png");
+    transform: rotate(270deg);
+}
+
+.u.r.l.a{
+    background-image: url("../images/activated_tsplit.png");
+}
+
+.r.d.l{
+    background-image: url("../images/tsplit.png");
+    transform: rotate(90deg);
+}
+
+.r.d.l.a{
+    background-image: url("../images/activated_tsplit.png");
+}
+
+.d.l.u{
+    background-image: url("../images/tsplit.png");
+    transform: rotate(180deg);
+}
+
+.d.l.u.a{
+    background-image: url("../images/activated_tsplit.png");
+}
+
+.u.r.d{
+    background-image: url("../images/tsplit.png");
+    transform: rotate(0deg);
+}
+
+.u.r.d.a{
+    background-image: url("../images/activated_tsplit.png");
+}
+
+/* Cross */
+.u.r.d.l{
+    background-image: url("../images/cross.png");
+}
+
+.u.r.d.l.a{
+    background-image: url("../images/activated_cross.png");
+}
+#home{
+    background-image: url('https://www.fdmgroup.com/wp-content/uploads/herobanner-uk-homepage-2.jpg');
+    background-position: center;
+    background-color: #000000;
+    background-repeat: repeat-y;
+    min-height: 60rem; /*this causes the page to scroll*/
+}
+
+#base{
+    background-color: #ffffff;
+    padding-bottom: 8rem;
+    min-height: 35rem;
+    margin-inline: 0;
+}
+
+

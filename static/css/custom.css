@@ -1,0 +1,289 @@
+/*!* Sticky footer styles - in case the fixed navbar is messing up/covers the rest
+-------------------------------------------------- *!
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  !* Margin bottom by footer height *!
+  margin-bottom: 60px;
+}*/
+
+/*When the page is bigger and needs a scroll use this to keep the footer down*/
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+/*body {*/
+/*    padding-bottom: 8rem;*/
+/*    padding-top: 6rem;*/
+/*    font-family: open sans, sans-serif;*/
+/*    */
+/*}*/
+
+#home{
+    background-image: url('https://www.fdmgroup.com/wp-content/uploads/herobanner-uk-homepage-2.jpg');
+    background-position: bottom right;
+    background-color: #000000;
+    background-repeat: repeat-y;
+    min-height: 60rem; /*this causes the page to scroll*/
+}
+
+#helper, #base{
+    background-color: white;
+    min-height: 35rem;
+}
+
+.navbar {
+    padding-bottom: 0;
+    margin: 0;
+    background-color: #202025;
+    border-top: 3px solid #1daded;
+    font-size: 18px;
+}
+
+#fdm_logo_header{
+    width: 126px;
+    height: 60px;
+    border: 1px;
+    padding:0;
+    margin:0;
+}
+
+.gradient-bar{
+    background: linear-gradient(40deg, rgb(21, 65, 200), rgba(136,32,187,1));
+    height: 12px;
+    padding: 0;
+    margin: 0;
+    opacity: 100%;
+}
+
+#upper-bar{
+    height:14px
+}
+
+:root {
+  --jumbotron-padding-y: 1rem;
+}
+
+.jumbotron {
+  padding-top: var(--jumbotron-padding-y);
+  padding-bottom: var(--jumbotron-padding-y);
+  margin-bottom: 0;
+  /*background-image: url('https://www.fdmgroup.com/wp-content/uploads/herobanner-uk-homepage-2.jpg');
+    !*height: 530px;*!
+    !*width: fit-content;*!
+    !*height: 100%;*!
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center right;*/
+}
+@media (min-width: 768px) {
+  .jumbotron {
+    padding-top: calc(var(--jumbotron-padding-y) * 2);
+    padding-bottom: calc(var(--jumbotron-padding-y) * 2);
+  }
+}
+
+.jumbotron p:last-child {
+  margin-bottom: 0;
+}
+
+.jumbotron-heading {
+    font-style: normal;
+    font-weight: 600;
+    /*font-size: 64px;*/
+    font-size: 4.4em;
+    text-align: center;
+
+    color: #FFFFFF;
+
+    text-shadow: 0 8px 4px #212026;
+}
+
+#helper-header{
+    font-size: 4rem;
+    font-weight: 300;
+    color: #1daded;
+    margin:0;
+    text-shadow: 0 6px 6px #212026;
+}
+
+#intro{
+    font-style: normal;
+    font-weight: 600;
+    /*
+    font-size: 32px;
+    */
+    font-size: 2.2em;
+    text-align: center;
+
+    color: #FFFFFF;
+    text-shadow: 0 6px 4px #000000;
+}
+
+.jumbotron .container {
+  max-width: 100%;
+}
+
+
+/*.form-select:focus{
+    border-color: #FF0000;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.3);
+    outline: 0;
+    outline: thin dotted \9;
+    border-width: 2px;
+}*/
+
+.form-control:focus, .form-select:focus{
+    border-color: #1541c8;
+    box-shadow: inset 0 0 3px 1px rgba(21, 65, 200, 1), 0 0 2px 3px rgba(21, 65, 200, 1);
+    border-width: 1px;
+}
+
+.form-label{
+    color: #ffffff;
+    font-weight: 500;
+    /*margin-left: 10px;*/
+    text-shadow: 0 3px 2px #212026;
+    min-width: max-content;
+    width: 8rem;
+}
+
+.form-control::placeholder{
+    color: #202025;
+}
+
+.form-col{
+    background: #1daded;
+    border-radius: 30px;
+    background-clip: border-box;
+    margin-bottom: 20px;
+}
+
+.form-title{
+    text-align: center;
+    padding-bottom: 15px;
+    color: white;
+    font-size: 2rem;
+    text-shadow: 0 4px 2px #212026;
+}
+
+.btn-grad{
+    border-radius: 50px;
+    background: #1541c8;
+    background: linear-gradient(40deg,#1541c8 0,#8820bb 100%);
+    color: white;
+    border: none;
+}
+
+#form-btn{
+    font-size: 1.3rem;
+    padding: 10px;
+    padding-inline: 10%;
+    font-weight: 300;
+}
+
+#get-h-score{
+    font-size: 1.3rem;
+    padding-inline: 15%;
+    font-weight: 300;
+}
+
+
+.card{
+    background-clip:padding-box;
+    border: 10px solid rgba(255, 255, 255, 0.5);
+    border-radius: 30px;
+}
+
+.card-img{
+    max-height: 350px;
+    border-radius: 20px;
+}
+
+.card-link{
+    color:#fff;
+    font-weight:600;
+    font-size: 20px;
+    text-decoration: none;
+}
+
+.card-link:visited:hover{
+    color: #811d1d
+}
+
+.card-link:hover{
+    color: #9551cb;
+    text-decoration: underline;
+}
+
+.stream_btn{
+    border-color: #1541C8;
+    background-color: #1541c8;
+    padding-block: 0;
+    padding-inline:4%;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    border-radius: 22px;
+    text-align: center;
+    font-size: 2rem;
+    max-font-size: 2rem;
+}
+
+.quiz-btn{
+    font-style: normal;
+    font-weight: 600;
+    font-size: 24px;
+    text-align: center;
+    text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    background-color: rgba(255, 255, 255, 0.7);
+    border: none;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    margin-bottom:0;
+    padding-bottom: 0;
+    padding-top: 3rem;
+    border-bottom: 8px solid #1daded;
+  /*  border-top: 12px solid #8820bb;*/
+}
+
+/*#lower-bar{
+    position: absolute;
+    height: 12px;
+    max-width: 100%;
+    top: -12px;
+}*/
+
+#helper-login-btn{
+    font-weight: 600;
+    font-size: 12px;
+    display: block;
+    max-width: max-content;
+    padding-inline: 20px;
+}
+
+#licence{
+    color: white;
+    font-size:12px;
+    font-family: open sans, sans-serif;
+    font-weight: 300;
+    margin-left:10px
+}
+
+/*footer p {
+  margin-bottom: .25rem;
+}*/
+
+.box-shadow { box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }
+
+.hide {
+    display:none;
+}

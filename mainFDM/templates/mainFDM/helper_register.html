@@ -1,0 +1,60 @@
+{% extends 'mainFDM/base.html' %}
+
+{%block title%}Helper Register{%endblock%}
+
+{%block header%}Please create your helper account{%endblock%}
+
+<!-- inside the main row for columns, attributes specified within base.html -->
+{% block row1 %}
+    <div class="col-auto form-col p-4 justify-content-center" id="register-form-col">
+
+        <!-- helper registration form: -->
+        <h3 class="form-title">Sign Up</h3>
+
+        <form method="post" action="">
+            {% csrf_token %}
+
+            <!-- errors and messages -->
+            {% for e in form.non_field_errors %}
+                <div class="alert alert-danger">{{ e|linebreaks }}</div>
+            {% endfor %}
+
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="alert alert-danger">{{ error|linebreaks }}</div>
+                {% endfor %}
+            {% endfor %}
+
+            {%  for message in messages %}
+                <div class="alert alert-success">{{ message|linebreaks }}</div>
+            {% endfor %}
+
+            <!-- form fields start here -->
+            <div class="form-floating mb-3">
+                {{ form.username }}
+                <label class="form-label-float">{{ form.username.label }}</label>
+            </div>
+            <div class="form-floating mb-3">
+                {{ form.email }}
+                <label class="form-label-float">{{ form.email.label }}</label>
+            </div>
+            <div class="form-floating mb-3">
+                {{ form.password1 }}
+                <label class="form-label-float">{{ form.password1.label }}</label>
+            </div>
+            <div class="form-floating mb-3">
+                {{ form.password2 }}
+                <label class="form-label-float">{{ form.password2.label }}</label>
+            </div>
+            <div class="d-flex pt-1 justify-content-center">
+               <button type="submit" class="btn btn-grad btn-lg" id="form-btn" >Submit</button>
+            </div>
+        </form>
+
+        <!-- option to login if already having an account -->
+        <div class="d-flex mt-4 justify-content-center links">
+            Already have a helper account? <a href="{% url 'helperLogin' %}" class="form-link ms-3">Login</a>
+        </div>
+
+    </div>
+{% endblock %}

@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="../../static/css/stylesheet.css">
+        <meta charset="UTF-8">
+
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static '/images/favicon-32x32.png' %}">
+        <link rel="icon" type="image/png" href="{% static '/images/favicon.ico' %}">
+
+    </head>
+
+    <body id="home">
+
+    <div class="main-container">
+        <div id="child-class-id">
+            <div id = "boxes">
+                <p id="status" align="center" class="status-bar">Each answer corresponds
+                    to the purple pipe next to it. Answer the question right, by helping the water reach the pipe which corresponds to the right answer. </p>
+            <div id = "leftbox">
+                <br><br><br><br><br><br><br><br><br><br>
+                <div id="question">{{ question_1 }}</div>
+            </div>
+
+            <div id = "middlebox">
+                <div id="grid">
+                    <script type="text/javascript" src="../../static/js/board.js"></script>
+                </div>
+                <div class="container-2">
+                    <div id="timer">02:00</div>
+                     <div align="center">
+                        <form method="post" class="timer">
+                        {% csrf_token %}
+
+                                <button id="sub-btn" type="submit" align="center" class="hide btn_end">Results Page</button>
+
+                                <button type="button" id="mybutton-1" onclick="location.href = '/';" title="link to homepage" class="hide btn_end">Back to Homepage</button>
+                                <button type="button" id="mybutton-2" onclick="window.location.href=window.location.href" title="link to homepage" class="hide btn_end">Play Again</button>
+
+                                <input type="hidden" name="score-holder" id="score-holder" value="blank">
+                                <input type="hidden" name="stream-holder" id="stream-holder" value={{ steam_type }}>
+
+            {#                <input type="hidden" name="score-holder" id="stream-holder" value='BI'>#}
+                    </form>
+
+        </div>
+
+       </div>
+            </div>
+
+            <div id = "rightbox">
+               <div id="answers" class="my_answers">
+                   <div id = "rightbox-up">
+                        <div class="answers"><h6 id="answer1"> </h6></div><br><br><br><br><br><br><br><br>
+                   </div>
+                   <div id = "rightbox-middle">
+                        <div  class="answers"><h6 id="answer2"> </h6></div><br><br><br><br><br><br><br><br>
+                   </div>
+                   <div id = "rightbox-down">
+                        <div class="answers"><h6 id="answer3"> </h6></div>
+                   </div>
+{#                       indicates the right answer (unhide this only for testing purposes)#}
+                      <h6 id="computer" hidden></h6>
+                  </div>
+            </div>
+        </div>
+      </div>
+
+    </div>
+
+    </body>
+
+    <div>
+        <input  value="{{ question_1 }}" name="value" id='q1' type="hidden"/>
+        <input  value="{{ answer_1 }}" name="value" id='a1' type="hidden"/>
+        <input  value="{{ answer_2 }}" name="value" id='a2' type="hidden"/>
+        <input  value="{{ answer_3 }}" name="value" id='a3' type="hidden"/>
+
+    </div>
+    <script>
+        document.getElementById("computer").innerHTML = sessionStorage.getItem("computerResponse");
+        if (sessionStorage.getItem("computerResponse")==1){
+            document.getElementById("answer1").innerHTML = document.getElementById('a1').value;
+            document.getElementById("answer2").innerHTML = document.getElementById('a2').value;
+            document.getElementById("answer3").innerHTML = document.getElementById('a3').value;
+        }
+        else if (sessionStorage.getItem("computerResponse")==2){
+            document.getElementById("answer1").innerHTML = document.getElementById('a2').value;
+            document.getElementById("answer2").innerHTML = document.getElementById('a1').value;
+            document.getElementById("answer3").innerHTML = document.getElementById('a3').value;
+        }
+        else if (sessionStorage.getItem("computerResponse")==3){
+            document.getElementById("answer1").innerHTML = document.getElementById('a3').value;
+            document.getElementById("answer2").innerHTML = document.getElementById('a2').value;
+            document.getElementById("answer3").innerHTML = document.getElementById('a1').value;
+        }
+
+    </script>
+
+
+{#    document.getElementById("score-holder").value = score.text#}
+{#    document.getElementById("submit-btn").classList.remove("hide")#}
+
+    </body>
+        </div>
+</html>

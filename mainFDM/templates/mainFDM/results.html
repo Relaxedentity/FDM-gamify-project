@@ -1,0 +1,157 @@
+{% extends 'mainFDM/base.html' %}
+
+{%block title%}Results page{%endblock%}
+
+{%block header%}Do you want to upload your scores?{%endblock%}
+
+{% block navtext %}
+    <!-- if the user is logged in, show a welcoming message and a log out button on the navbar
+       and collapse it under the toggle button on smaller screens -->
+    {% if request.user.is_authenticated %}
+        <span class="navbar-text text-info mx-2">Hello, {{ request.user }} </span>
+        <a class="nav-link link-light mx-2" href="/helper/logout/">Log out <span class="sr-only"></span></a>
+    {% endif %}
+{% endblock %}
+
+<!-- container for the main row of columns -->
+{% block forcolumns %}
+              <!-- row of for 2 columns of content on the page -->
+              <div class="row justify-content-center justify-content-md-around justify-content-lg-between pt-5">
+
+                  <div class="col-auto col-lg-5"> <!-- outer container for upload scores form/leaderboard AND twitter -->
+
+                      <!-- upload scores / leaderboard column -->
+                      <div class="container form-col p-3 p-sm-3 pb-4 pb-sm-3 justify-content-center" id="upload-form-col">
+
+                          <!-- ajax result for successful submission of the upload form -->
+                          <div class="" id="success"></div>
+
+                          <!-- 'upload scores' form starts here -->
+                          <form class="" method="POST" action="" id="upload-scores">{%  csrf_token %}
+
+                              <!-- form title -->
+                              <div id="form-title-div">
+                                  <h3 class="form-title" id="form-title">Upload</h3>
+                              </div>
+
+                              <!-- form fields -->
+                              <div class="mb-3">
+                                  <label class="form-label">{{ form.player_username.label }}</label>
+                                  {{ form.player_username }}
+                              </div>
+                              <div class="mb-3">
+                                  <label class="form-label">{{ form.game_type.label }}</label>
+                                  {{ form.game_type }}
+                              </div>
+                              <div class="mb-3">
+                                  <label class="form-label">{{ form.score.label }}</label>
+                                  {{ form.score }}
+                              </div>
+
+                              <!-- button to submit scores -->
+                              <div class="d-flex pt-1 justify-content-center">
+                                  <button type="submit" class="btn btn-grad btn-lg" id="form-btn" >Submit</button>
+                              </div>
+                          </form> <!-- end of upload scores form -->
+
+                          <!-- leader board starts here (still the same column as the upload form) -->
+                          <div class="container justify-content-center d-none" id="leaderboard">
+                              <!-- leaderboard title -->
+                              <div id="leaderboard-title-div">
+                                  <h3 class="form-title" id="leaderboard-title">{{ game }} Game Leaderboard</h3>
+                              </div>
+
+                                   <!-- table with current best scoring players and their scores -->
+                                  <table class="table table-bordered" id="best-scores-table">
+                                      <thead class="table-head">
+                                        <tr class="table-row">
+                                            <th scope="col">Rank</th>
+                                            <th scope="col">Player Username</th>
+                                            <th scope="col">Time [s]</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody id="leader-table">
+                                      </tbody>
+                                    </table>
+                          </div>
+                      </div> <!-- end of upload scores / leaderboard column -->
+
+                      <!-- share results on twitter component -->
+                      <div class="container form-col p-4">
+
+                          <h3 class="form-title">Share Results on Twitter</h3>
+
+                          <div class="d-flex pt-1 justify-content-center">
+                              <button title="button title" class="btn btn-grad btn-lg" onclick=" window.open('{{ tweetURL }}', '_blank'); return false;">Share</button>
+                          </div>
+                      </div><!-- end of share results on twitter component -->
+
+                  </div> <!-- end of outer container for upload/leaderboard AND twitter -->
+
+                  <!-- proceed to streams & info container (same size as outer container on the left but invisible) -->
+                  <div class="col-sm-auto col-md-5">
+                      <!-- actual column with the proceed to streams button (small) -->
+                      <div class="container form-col p-4" style="min-width: fit-content">
+
+                        <!-- 'take me to the streams' form -->
+                        <h3 class="form-title">Find out more about the stream</h3>
+                          <div class="column-text">The game you played was based on the <b>{{stream_type}}</b> stream.<br>
+                            You can find out more about it on the FDM Group website using the button below.</div>
+
+                         <!-- the form starts here -->
+                          <!-- based on the stream chosen before the game started, redirect to the correct page -->
+                        {% with s=stream_type %}
+                          {%  if s == "Business Intelligence" %}
+                              <form method="POST" action='https://www.fdmgroup.com/careers/graduates/business-graduate/business-intelligence-graduate-programme/' target="_blank">
+                          {% elif s == "Software Testing" %}
+                              <form method="POST" action='https://www.fdmgroup.com/careers/graduates/technical-graduate-programme/software-testing-graduate-programme/' target="_blank">
+                          {% elif s == "Technical Operations" %}
+                              <form method="POST" action='https://www.fdmgroup.com/careers/graduates/technical-graduate-programme/technical-operations-graduate-programme/' target="_blank">
+                          {% else %}
+                              <form method="POST" action='/'>
+                          {% endif %}
+                        {% endwith %}
+                                <!-- the rest of the form -->
+                                {% csrf_token %}
+                                  <!-- 'let's go' button -->
+                                <div class="d-flex pt-1 justify-content-center">
+                                   <button type="submit" class="btn btn-grad btn-lg" id="form-btn2" >Let's Go</button>
+                                </div>
+                            </form>
+                              </form>
+                              </form>
+                              </form>
+                      </div> <!-- end of proceed to stream component -->
+
+                      <div class="container form-col p-4"> <!-- receive-info-email component -->
+
+                          <h3 class="form-title">Receive information about graduate programme</h3>
+
+                          <!-- receive info email form -->
+                              <form method="post">
+                                  {% csrf_token %}
+
+                                  <div class="form-floating mb-3">
+                                        {{ email_form.email }}
+                                        <label class="form-label-float">{{ email_form.email.label }}</label>
+                                  </div>
+
+                                  <div class="d-flex pt-1 justify-content-center">
+                                       <button type="submit" class="btn btn-grad btn-lg" >Submit</button>
+                                  </div>
+                              </form>
+
+                      </div> <!-- end of receive-info-email component -->
+
+                  </div> <!-- end of proceed to stream/receive email outer container -->
+              </div> <!-- end of the outer row with the two columns-->
+
+{% endblock %}
+
+
+<!-- footer  -->
+{% block helper-button %}
+<a href="/helper/home/" type="button" class="btn btn-grad btn-lg mt-2 mx-auto text-nowrap" id="helper-login-btn">
+    HELPER PAGE
+</a>
+{% endblock %}
